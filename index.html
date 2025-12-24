@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Weather Web App</title>
+    </head>
+    <link href="style.css" rel="stylesheet">
+    <script src="index.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta name="description" content="A Weather Web Application created with HTML, CSS & JavaScript that utilizes AirVisual's API.">
+
+
+    <body>
+        <main>
+            <h1 class="sr-only">Weather Application</h1> 
+
+            <section class="language-section">
+                <select>
+                    <option>ENGLISH</option>
+                    <option>PORTUGUESE</option>
+                </select>
+            </section>
+            
+            <section class="location-section">
+                <h2>Bonadelle Ranchos-Madera Ranchos</h2>
+                <p>CA, USA</p>
+            </section>
+
+            <section class="current-temp-section">
+                <h2>40°F</h2>
+                <p>Current Temperature</p>
+            </section>
+
+            <section class="mascot-section">
+                <img src="weatherToad.png" width="250px"/>
+            </section>
+
+            <section class="silly-text-section"> 
+                <p>The sun is up, but are you? (no shade, but maybe you should find some...)</p>
+            </section>
+
+            <section class="date-section">
+                <h2>SUNDAY</h2>
+                <p>December 13, 2025</p>
+            </section>
+
+            <section id="local-conditions-section" class="conditions-section local-conditions-section">
+                <h2 class="conditions-header">LOCAL CONDITIONS</h2>
+                <div class="condition-container">
+                    <div class="text-and-icon">
+                        <h3>AIR QUALITY</h3>
+                        <i class="fa-solid fa-head-side-mask"></i>
+                    </div>
+                    <p>Unhealthy</p>
+                </div>
+                <div class="condition-container">
+                    <div class="text-and-icon">
+                        <h3>HUMIDITY</h3>
+                        <i class="fa-solid fa-droplet"></i>
+                    </div>
+                    <p>61%</p>
+                </div>
+                <div class="condition-container">
+                    <div class="text-and-icon">
+                        <h3>WIND SPEED</h3>
+                        <i class="fa-solid fa-wind"></i>
+                    </div>
+                    <p>8 mph</p>
+                </div>
+            </section>
+
+            <section id="forecast-section" class="conditions-section forecast-section">
+                <h2 class="conditions-header">3-DAY FORECAST</h2>
+                <div class="condition-container">
+                    <div class="text-and-icon">
+                        <h3>TODAY</h3>
+                        <i class="fa-solid fa-sun"></i>
+                    </div>
+                    <div class="temps">
+                        <div class="temp-high">
+                            <p class="degree">79°F</p>
+                            <i class="fa-solid fa-arrow-up"></i>
+                            <p class="high-low">HIGH</p>
+                        </div>
+                        <div class="divider" aria-hidden="true"></div>
+                        <div class="temp-low">
+                            <p class="degree">51°F</p>
+                            <i class="fa-solid fa-arrow-down"></i>
+                            <p class="high-low">LOW</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="condition-container">
+                    <div class="text-and-icon">
+                        <h3>TUE</h3>
+                        <i class="fa-solid fa-cloud"></i>
+                    </div>
+                    <div class="temps">
+                        <div class="temp-high">
+                            <p class="degree">79°F</p>
+                            <i class="fa-solid fa-arrow-up"></i>
+                            <p class="high-low">HIGH</p>
+                        </div>
+                        <div class="divider" aria-hidden="true"></div>
+                        <div class="temp-low">
+                            <p class="degree">51°F</p>
+                            <i class="fa-solid fa-arrow-down"></i>
+                            <p class="high-low">LOW</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="condition-container">
+                    <div class="text-and-icon">
+                        <h3>WED</h3>
+                        <i class="fa-regular fa-snowflake"></i>
+                    </div>
+                    <div class="temps">
+                        <div class="temp-high">
+                            <p class="degree">79°F</p>
+                            <i class="fa-solid fa-arrow-up"></i>
+                            <p class="high-low">HIGH</p>
+                        </div>
+                        <div class="divider" aria-hidden="true"></div>
+                        <div class="temp-low">
+                            <p class="degree">51°F</p>
+                            <i class="fa-solid fa-arrow-down"></i>
+                            <p class="high-low">LOW</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </body>
+</html>
