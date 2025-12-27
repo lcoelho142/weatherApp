@@ -1,0 +1,10 @@
+3. english to portuguese translation
+2. geolocation
+1. get current date 
+- fetch weather data
+    - get current temperature
+    - air quality
+    - humidity
+    - wind speed
+    - 3-day forecast (high & low temps)
+    - get today's condition and the following two days
