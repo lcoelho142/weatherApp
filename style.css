@@ -12,13 +12,13 @@
 }
 
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Trebuchet MS', sans-serif;
-  margin: auto 2rem;
-  text-align: center;
-  margin-bottom: 1.5rem;
-  min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Trebuchet MS', sans-serif;
+    margin: auto 2rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    min-height: 100vh;
 }
 
 main {
