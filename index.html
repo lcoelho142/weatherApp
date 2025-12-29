@@ -27,7 +27,7 @@
             </section>
 
             <section class="current-temp-section">
-                <h2>40°F</h2>
+                <h2 id="current-temp-value">...</h2>
                 <p>Current Temperature</p>
             </section>
 
@@ -48,24 +48,24 @@
                 <h2 id="local-conditions" class="conditions-header">LOCAL CONDITIONS</h2>
                 <div class="condition-container">
                     <div class="text-and-icon">
-                        <h3>AIR QUALITY</h3>
-                        <i class="fa-solid fa-head-side-mask"></i>
+                        <h3>UV INDEX</h3>
+                        <i class="fa-solid fa-spray-can-sparkles"></i>
                     </div>
-                    <p>Unhealthy</p>
+                    <p id="uv-index-value">...</p>
                 </div>
                 <div class="condition-container">
                     <div class="text-and-icon">
                         <h3>HUMIDITY</h3>
                         <i class="fa-solid fa-droplet"></i>
                     </div>
-                    <p>61%</p>
+                    <p id="humidity-value">...</p>
                 </div>
                 <div class="condition-container">
                     <div class="text-and-icon">
                         <h3>WIND SPEED</h3>
                         <i class="fa-solid fa-wind"></i>
                     </div>
-                    <p>8 mph</p>
+                    <p id="wind-speed-value">...</p>
                 </div>
             </section>
 
@@ -73,18 +73,18 @@
                 <h2 id="3-day-forecast" class="conditions-header">3-DAY FORECAST</h2>
                 <div class="condition-container">
                     <div class="text-and-icon">
-                        <h3>TODAY</h3>
-                        <i class="fa-solid fa-sun"></i>
+                        <h3 id="today">...</h3>
+                        <i id="today-weather-icon" class=""></i>
                     </div>
                     <div class="temps">
                         <div class="temp-high">
-                            <p class="degree">79°F</p>
+                            <p id="today-high-temp" class="degree">...</p>
                             <i class="fa-solid fa-arrow-up"></i>
                             <p class="high-low">HIGH</p>
                         </div>
                         <div class="divider" aria-hidden="true"></div>
                         <div class="temp-low">
-                            <p class="degree">51°F</p>
+                            <p id="today-low-temp" class="degree">...</p>
                             <i class="fa-solid fa-arrow-down"></i>
                             <p class="high-low">LOW</p>
                         </div>
@@ -92,18 +92,18 @@
                 </div>
                 <div class="condition-container">
                     <div class="text-and-icon">
-                        <h3>TUE</h3>
-                        <i class="fa-solid fa-cloud"></i>
+                        <h3 id="next-day">...</h3>
+                        <i id="next-day-weather-icon" class=""></i>
                     </div>
                     <div class="temps">
                         <div class="temp-high">
-                            <p class="degree">79°F</p>
+                            <p id="next-day-high-temp" class="degree">...</p>
                             <i class="fa-solid fa-arrow-up"></i>
                             <p class="high-low">HIGH</p>
                         </div>
                         <div class="divider" aria-hidden="true"></div>
                         <div class="temp-low">
-                            <p class="degree">51°F</p>
+                            <p id="next-day-low-temp" class="degree">...</p>
                             <i class="fa-solid fa-arrow-down"></i>
                             <p class="high-low">LOW</p>
                         </div>
@@ -111,18 +111,18 @@
                 </div>
                 <div class="condition-container">
                     <div class="text-and-icon">
-                        <h3>WED</h3>
-                        <i class="fa-regular fa-snowflake"></i>
+                        <h3 id="day-after-next">...</h3>
+                        <i id="day-after-next-weather-icon" class=""></i>
                     </div>
                     <div class="temps">
                         <div class="temp-high">
-                            <p class="degree">79°F</p>
+                            <p id="day-after-next-high-temp" class="degree">...</p>
                             <i class="fa-solid fa-arrow-up"></i>
                             <p class="high-low">HIGH</p>
                         </div>
                         <div class="divider" aria-hidden="true"></div>
                         <div class="temp-low">
-                            <p class="degree">51°F</p>
+                            <p id="day-after-next-low-temp" class="degree">...</p>
                             <i class="fa-solid fa-arrow-down"></i>
                             <p class="high-low">LOW</p>
                         </div>
