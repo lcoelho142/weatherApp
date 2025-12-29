@@ -11,37 +11,43 @@ date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeri
 // Get Geolocation
 navigator.geolocation.getCurrentPosition(async pos => {
     const { latitude, longitude } = pos.coords;
-
-    const weatherApiUrl = await fetch(
-        `https://api.openweathermap.org/data/3.0/onecall?lat=${latitude}&lon=${longitude}&appid=35b058347c0103ccb9299fc20d824cae`);
-    console.log(weatherApiUrl);
-
-    const res = await fetch(
-    `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyDP0wNN63Wz91zAldMps6RfoHs5zgnO-pE`
-    );
-
-    const data = await res.json();
-    const comps = data.results[0].address_components;
-    const city = comps.find(c => c.types.includes("locality"))?.long_name;
-    const state = comps.find(c => c.types.includes("administrative_area_level_1"))?.short_name;
-    const country = comps.find(c => c.types.includes("country"))?.short_name;
-
-    document.getElementById("city").textContent = city;
-    document.getElementById("region").textContent = `${state}, ${country}`;
+    updateLocationInfo(latitude, longitude);
+    updateWeatherInfo(latitude, longitude);
 });
+
+const updateLocationInfo = async (latitude, longitude) => {
+    const googleURL = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyDP0wNN63Wz91zAldMps6RfoHs5zgnO-pE`;
+
+    const res = await fetch(googleURL);
+    const data = await res.json();
+    const comps = data.results[0].address_components
+    const city = comps[2].long_name
+    const state = comps[4].short_name;
+    const country = comps[5].short_name;
+    console.log(country);
+
+    document.getElementById('city').textContent = city;
+    document.getElementById('region').textContent = `${state}, ${country}`;
+
+};
+
+const updateWeatherInfo = async (latitude, longitude) => {
+    const weatherApiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${latitude}&lon=${longitude}&appid=35b058347c0103ccb9299fc20d824cae`;
+
+    const res = await fetch(weatherApiUrl);
+    const data = await res.json();
+    const currentTempKelvin = data.current.temp;
+    console.log('temperature: ', currentTempKelvin);
+    const currentHumidityPercent = data.current.humidity;
+    console.log('humidity:', currentHumidityPercent);
+
+}
+
+// getLocationInfo(latitude, longitude);
+
+
 
 // Get OpenWeather Conditions Below
-const weatherRes = await fetch(weatherApiUrl);
-const weather = await weatherRes.json();
-
-document.getElementById("currentTemp").textContent = Math.round(weather.current.temp * 9/5 - 459.67); // K → °F
-document.getElementById("humidity").textContent = `${weather.current.humidity}%`;
-document.getElementById("wind").textContent = `${weather.current.wind_speed} mph`;
-
-weather.daily.slice(0, 3).forEach((day, i) => {
-    document.getElementById(`day${i}High`).textContent = Math.round(day.temp.max * 9/5 - 459.67);
-    document.getElementById(`day${i}Low`).textContent = Math.round(day.temp.min * 9/5 - 459.67);
-});
 
 // English to Portuguese Translation
 i18next.init({
