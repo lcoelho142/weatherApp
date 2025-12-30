@@ -28,15 +28,15 @@
 
             <section class="current-temp-section">
                 <h2 id="current-temp-value">...</h2>
-                <p>Current Temperature</p>
+                <p id="current-temp">Current Temperature</p>
             </section>
 
             <section class="mascot-section">
-                <img src="weatherToad.png" width="250px"/>
+                <img id="frog-img" src="" width="250px"/>
             </section>
 
             <section class="silly-text-section"> 
-                <p>The sun is up, but are you? (no shade, but maybe you should find some...)</p>
+                <p id="blurb">...</p>
             </section>
 
             <section class="date-section">
@@ -48,21 +48,21 @@
                 <h2 id="local-conditions" class="conditions-header">LOCAL CONDITIONS</h2>
                 <div class="condition-container">
                     <div class="text-and-icon">
-                        <h3>UV INDEX</h3>
+                        <h3 id="uv-index">UV INDEX</h3>
                         <i class="fa-solid fa-sun"></i>
                     </div>
                     <p id="uv-index-value">...</p>
                 </div>
                 <div class="condition-container">
                     <div class="text-and-icon">
-                        <h3>HUMIDITY</h3>
+                        <h3 id="humidity">HUMIDITY</h3>
                         <i class="fa-solid fa-droplet"></i>
                     </div>
                     <p id="humidity-value">...</p>
                 </div>
                 <div class="condition-container">
                     <div class="text-and-icon">
-                        <h3>WIND SPEED</h3>
+                        <h3 id="wind-speed">WIND SPEED</h3>
                         <i class="fa-solid fa-wind"></i>
                     </div>
                     <p id="wind-speed-value">...</p>
@@ -80,13 +80,13 @@
                         <div class="temp-high">
                             <p id="today-high-temp" class="degree">...</p>
                             <i class="fa-solid fa-arrow-up"></i>
-                            <p class="high-low">HIGH</p>
+                            <p id="high-today"class="high-low">HIGH</p>
                         </div>
                         <div class="divider" aria-hidden="true"></div>
                         <div class="temp-low">
                             <p id="today-low-temp" class="degree">...</p>
                             <i class="fa-solid fa-arrow-down"></i>
-                            <p class="high-low">LOW</p>
+                            <p id="low-today"class="high-low">LOW</p>
                         </div>
                     </div>
                 </div>
@@ -99,13 +99,13 @@
                         <div class="temp-high">
                             <p id="next-day-high-temp" class="degree">...</p>
                             <i class="fa-solid fa-arrow-up"></i>
-                            <p class="high-low">HIGH</p>
+                            <p id="high-next-day"class="high-low">HIGH</p>
                         </div>
                         <div class="divider" aria-hidden="true"></div>
                         <div class="temp-low">
                             <p id="next-day-low-temp" class="degree">...</p>
                             <i class="fa-solid fa-arrow-down"></i>
-                            <p class="high-low">LOW</p>
+                            <p id="low-next-day"class="high-low">LOW</p>
                         </div>
                     </div>
                 </div>
@@ -118,13 +118,13 @@
                         <div class="temp-high">
                             <p id="day-after-next-high-temp" class="degree">...</p>
                             <i class="fa-solid fa-arrow-up"></i>
-                            <p class="high-low">HIGH</p>
+                            <p id="high-day-after-next"class="high-low">HIGH</p>
                         </div>
                         <div class="divider" aria-hidden="true"></div>
                         <div class="temp-low">
                             <p id="day-after-next-low-temp" class="degree">...</p>
                             <i class="fa-solid fa-arrow-down"></i>
-                            <p class="high-low">LOW</p>
+                            <p id="low-day-after-next"class="high-low">LOW</p>
                         </div>
                     </div>
                 </div>

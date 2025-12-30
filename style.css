@@ -72,8 +72,13 @@ h2 {
     color: var(--secondary);
 }
 
+h3 {
+    text-transform: uppercase;
+}
+
 .conditions-header {
     color: var(--accent);
+    text-transform: uppercase;
 }
 
 .sr-only {

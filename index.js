@@ -1,12 +1,115 @@
+// English to Portuguese Translation
+i18next.init({
+lng: "en",
+resources: {
+    en: { 
+        translation: {
+            english: "English",
+            portuguese: "Portuguese",
+            currentTemp: "Current Temperature",
+            localConditions: "Local Conditions",
+            uvi: "UV Index",
+            humidity: "Humidity",
+            windSpeed: "Wind Speed",
+            forecast: "3-Day Forecast",
+            high: "High",
+            low: "Low"
+        } 
+    },
+    pt: { 
+        translation: { 
+            english: "Inglês",
+            portuguese: "Português",
+            currentTemp: "Temperatura Atual",
+            localConditions: "Condições Locais",
+            uvi: "Índice UV",
+            humidity: "Humidade",
+            windSpeed: "Velocidade do Vento",
+            forecast: "Previsão de 3 Dias",
+            high: "Alto",
+            low: "Baixo"
+        } 
+    }
+}
+});
+
+// For linking translation to id name
+const translationMap = {
+    english: "english",
+    portuguese: "portuguese",
+    currentTemp: "current-temp",
+    localConditions: "local-conditions",
+    uvi: "uv-index",
+    humidity: "humidity",
+    windSpeed: "wind-speed",
+    forecast: "3-day-forecast",
+    high: ["high-today", "high-next-day", "high-day-after-next"],
+    low: ["low-today", "low-next-day", "low-day-after-next"]
+}
+
+// Assign Code Keys
+function render() {
+    Object.entries(translationMap).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+            value.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.textContent = i18next.t(key);
+                }
+            });
+        } else {
+            const el = document.getElementById(value);
+            if (el) {
+                el.textContent = i18next.t(key);
+            }
+        }
+    });
+}
+
+function getCurrentLocale() {
+    return i18next.language === "pt" ? "pt-PT" : "en-US";
+}
+
+function renderAll() {
+    render();
+    renderDay();
+    renderDate();
+}
+renderAll();
+
+// Language Toggle Button on Click
+const langSelect = document.getElementById("lang-select");
+langSelect.addEventListener("change", e => {
+    i18next.changeLanguage(e.target.value, render);
+});
+
 
 // Get Day of the Week
-const days = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
-document.getElementById("day").textContent = days[new Date().getDay()];
+function renderDay() {
+    const locale = getCurrentLocale();
+    const today = new Date();
+
+    document.getElementById("day").textContent =
+        today.toLocaleDateString(locale, { weekday: "long" });
+}
+// const days = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
+// document.getElementById("day").textContent = days[new Date().getDay()];
 
 // Get Calendar Date
-const date = new Date();
-document.getElementById("date").textContent =
-date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+function renderDate() {
+    const locale = getCurrentLocale();
+    const today = new Date();
+
+    document.getElementById("date").textContent =
+        today.toLocaleDateString(locale, { 
+            month: "short",
+            day: "numeric",
+            year: "numeric"
+        });
+}
+// const date = new Date();
+// document.getElementById("date").textContent =
+// date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 
 // Get Geolocation
 navigator.geolocation.getCurrentPosition(async pos => {
@@ -58,11 +161,11 @@ const updateWeatherInfo = async (latitude, longitude) => {
     const todayLowTempF = convertKelvinToFahrenheit(today.temp.min);
     // console.log(todayLowTempF);
     const todayName = 'today';
-    console.log(todayName);
-    const todayIconCode = today.weather[0].icon;
-    console.log(todayIconCode);
-    const todayIconUrl = `https://openweathermap.org/img/wn/${todayIconCode}@2x.png`;
-    console.log(todayIconUrl);
+    // console.log(todayName);
+    // const todayIconCode = today.weather[0].icon;
+    // // console.log(todayIconCode);
+    // const todayIconUrl = `https://openweathermap.org/img/wn/${todayIconCode}@2x.png`;
+    // // console.log(todayIconUrl);
 
 //Forecast Next Day
     const nextDay = data.daily[1];
@@ -88,39 +191,107 @@ const updateWeatherInfo = async (latitude, longitude) => {
     const dayAfterNextDayName = new Date(dayAfterNext.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' });
     // console.log(dayAfterNextDayName);
 
-// OpenWeather to Font Awesome Icon Converter
-    const fontAwesomeMap = {
-        Clear: 'fa-sun',
-        Clouds: 'fa-cloud',
-        Rain: 'fa-cloud-showers-heavy',
-        Snow: 'fa-snowflake',
-        Thunderstorm: 'fa-cloud-bolt',
-        Drizzle: 'fa-cloud-rain',
-        Mist: 'fa-smog',
-        Smoke: 'fa-smog',
-        Haze: 'fa-smog',
-        Dust: 'fa-smog',
-        Fog: 'fa-smog',
-        Sand: 'fa-smog',
-        Ash: 'fa-volcano',
-        Squall: 'fa-wind',
-        Tornado: 'fa-tornado',
-    };
+const weatherConditionMap = {
+        Clear: {
+            src: "./weather-imgs/sunny.svg",
+            icon: 'fa-sun',
+            blurb: ['The sun is up, but are you? (no shade, but maybe you should find some...)']
+        },
+        Clouds: {
+            src: "./weather-imgs/cloudy.svg",
+            icon: 'fa-cloud',
+            blurb: ['It do be cloudy!']
+        },
+        Rain: {
+            src: "./weather-imgs/rain-shower.svg",
+            icon: 'fa-cloud-showers-heavy',
+            blurb: ['When it rains, it pours!']
+        },
+        Snow: {
+            src: "./weather-imgs/snowy.svg",
+            icon: 'fa-snowflake',
+            blurb: ['The weather outside be frightful!']
+        },
+        Thunderstorm: {
+            src: "./weather-imgs/thunderstorm.svg",
+            icon: 'fa-cloud-bolt',
+            blurb: ['Ben Franklin be experiementing with electricity outside, be warned!']
+        },
+        Drizzle: {
+            src: "./weather-imgs/drizzle.svg",
+            icon: 'fa-cloud-rain',
+            blurb: ['It a lil wet outside!']
+        },
+        Mist: {
+            src: "./weather-imgs/smog.svg",
+            icon: 'fa-smog',
+            blurb: ['Water particles are suffocating the air at the moment.']
+        },
+        Smoke: {
+            src: "./weather-imgs/smog.svg",
+            icon: 'fa-smog',
+            blurb: ['Beware of second-hand smoke!']
+        },
+        Haze: {
+            src: "./weather-imgs/smog.svg",
+            icon: 'fa-smog',
+            blurb: ["Are ya feelin' lazy or is it just hazy out there, today?"]
+        },
+        Dust: {
+            src: "./weather-imgs/smog.svg",
+            icon: 'fa-smog',
+            blurb: ['The air be crusty and dusty.']
+        },
+        Fog: {
+            src: "./weather-imgs/smog.svg",
+            icon: 'fa-smog',
+            blurb: ['Prepare to venture into the fog!']
+        },
+        Sand: {
+            src: "./weather-imgs/smog.svg",
+            icon: 'fa-smog',
+            blurb: ["Hope you understand, there's gonna be sand!"]
+        },
+        Ash: {
+            src: "./weather-imgs/volcanic-ash.svg",
+            icon: 'fa-volcano',
+            blurb: ['What in the Pompeii is happening!?']
+        },
+        Squall: {
+            src: "./weather-imgs/squall.svg",
+            icon: 'fa-wind',
+            blurb: ['The weather and wind be intense!']
+        },
+        Tornado: {
+            src: "./weather-imgs/tornado.svg",
+            icon: 'fa-tornado',
+            blurb: ['Dorothy & Toto, get ready for a Tornado!']
+        }
+    }
+
+    // console.log(weatherConditionMap);
 
     //Today Condition
     const todayCondition = today.weather[0].main;
+    const todayConfig = weatherConditionMap[todayCondition];
     document.getElementById('today-weather-icon').className = 
-        `fa-solid ${fontAwesomeMap[todayCondition] || 'fa-cloud'}`;
-
+        `fa-solid ${todayConfig.icon}`;
+    document.getElementById('frog-img').src = todayConfig.src;
+    document.getElementById('blurb').textContent = todayConfig.blurb;
+        // console.log(todayConfig.icon);
+    
     //Next Day Condition
-    const nextDayCondition = data.daily[1].main;
+    const nextDayCondition = nextDay.weather[0].main;
+    const nextDayConfig = weatherConditionMap[nextDayCondition];
     document.getElementById('next-day-weather-icon').className = 
-        `fa-solid ${fontAwesomeMap[nextDayCondition] || 'fa-cloud'}`;
-
+        `fa-solid ${nextDayConfig.icon}`;
+        
     //Day After Next Condition
-    const dayAfterNextCondition = data.daily[2].main;
+    const dayAfterNextCondition = dayAfterNext.weather[0].main;
+    const dayAfterNextConfig = weatherConditionMap[dayAfterNextCondition];
     document.getElementById('day-after-next-weather-icon').className = 
-        `fa-solid ${fontAwesomeMap[dayAfterNextCondition] || 'fa-cloud'}`;
+        `fa-solid ${dayAfterNextConfig.icon}`;
+        // console.log(dayAfterNextCondition);
 
 // Get Elements By ID & update content below
 //Current Condition Info
@@ -134,7 +305,7 @@ const updateWeatherInfo = async (latitude, longitude) => {
     document.getElementById('today').textContent = todayName.toUpperCase();
     document.getElementById('today-high-temp').textContent = `${todayHighTempF}°F`;
     document.getElementById('today-low-temp').textContent = `${todayLowTempF}°F`;
-    document.getElementById('today-weather-icon').src = todayIconUrl;
+    // document.getElementById('today-weather-icon').src = todayIconUrl;
     //Next Day
     document.getElementById('next-day').textContent = nextDayName.toUpperCase();
     document.getElementById('next-day-high-temp').textContent = `${nextDayHighTempF}°F`;
@@ -144,43 +315,3 @@ const updateWeatherInfo = async (latitude, longitude) => {
     document.getElementById('day-after-next-high-temp').textContent = `${dayAfterNextHighTempF}°F`;
     document.getElementById('day-after-next-low-temp').textContent = `${dayAfterNextLowTempF}°F`;
 } 
-
-
-
-// English to Portuguese Translation
-i18next.init({
-lng: "en",
-resources: {
-    en: { 
-        translation: {
-            english: "English",
-            portuguese: "Portuguese",
-            forecast: "3-Day Forecast",
-        } 
-    },
-    pt: { 
-        translation: { 
-            english: "Inglês",
-            portuguese: "Português",
-            forecast: "Previsão de 3 Dias" 
-        } 
-    }
-}
-});
-
-// Assign Code Keys
-function render() {
-document.getElementById("english").textContent = i18next.t("english");
-document.getElementById("portuguese").textContent = i18next.t("portuguese");
-document.getElementById("3-day-forecast").textContent = i18next.t("forecast");
-
-}
-// Loop thru keys above
-
-render();
-
-// Language Toggle Button on Click
-const langSelect = document.getElementById("lang-select");
-langSelect.addEventListener("change", e => {
-    i18next.changeLanguage(e.target.value, render);
-});
