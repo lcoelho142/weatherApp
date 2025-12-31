@@ -1,3 +1,23 @@
+let currentLat;
+let currentLong;
+
+const localeConfig = {
+    en: {
+    ui: "en-US",
+    weather: "en",
+    units: "imperial"
+    },
+    pt: {
+    ui: "pt-PT",
+    weather: "pt",
+    units: "metric"
+    }
+};
+
+function getCurrentConfig() {
+    return localeConfig[i18next.language] || localeConfig.en;
+}
+
 // English to Portuguese Translation
 i18next.init({
 lng: "en",
@@ -6,12 +26,13 @@ resources: {
         translation: {
             english: "English",
             portuguese: "Portuguese",
-            currentTemp: "Current Temperature",
+            currentTemp: "Current Temp",
             localConditions: "Local Conditions",
             uvi: "UV Index",
             humidity: "Humidity",
             windSpeed: "Wind Speed",
             forecast: "3-Day Forecast",
+            today: "Today",
             high: "High",
             low: "Low"
         } 
@@ -26,6 +47,7 @@ resources: {
             humidity: "Humidade",
             windSpeed: "Velocidade do Vento",
             forecast: "Previsão de 3 Dias",
+            today: "Hoje",
             high: "Alto",
             low: "Baixo"
         } 
@@ -43,9 +65,12 @@ const translationMap = {
     humidity: "humidity",
     windSpeed: "wind-speed",
     forecast: "3-day-forecast",
+    today: "today",
     high: ["high-today", "high-next-day", "high-day-after-next"],
     low: ["low-today", "low-next-day", "low-day-after-next"]
 }
+
+
 
 // Assign Code Keys
 function render() {
@@ -66,21 +91,27 @@ function render() {
     });
 }
 
-function getCurrentLocale() {
-    return i18next.language === "pt" ? "pt-PT" : "en-US";
+function capitalize(str) {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-function renderAll() {
-    render();
-    renderDay();
-    renderDate();
+function getCurrentLocale() {
+    return getCurrentConfig().ui;
 }
-renderAll();
+
+function changeLanguage(lang, lat, long) {
+    i18next.changeLanguage(lang, () => {
+        renderDay();
+        renderDate();
+        renderAll(lat, long);
+    });
+}
 
 // Language Toggle Button on Click
 const langSelect = document.getElementById("lang-select");
 langSelect.addEventListener("change", e => {
-    i18next.changeLanguage(e.target.value, render);
+    changeLanguage(e.target.value, currentLat, currentLong);
 });
 
 
@@ -88,38 +119,35 @@ langSelect.addEventListener("change", e => {
 function renderDay() {
     const locale = getCurrentLocale();
     const today = new Date();
-
-    document.getElementById("day").textContent =
-        today.toLocaleDateString(locale, { weekday: "long" });
+    const dayName = today.toLocaleDateString(locale, { weekday: "long" });
+    document.getElementById("day").textContent = dayName.toUpperCase();
 }
-// const days = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
-// document.getElementById("day").textContent = days[new Date().getDay()];
 
 // Get Calendar Date
 function renderDate() {
     const locale = getCurrentLocale();
     const today = new Date();
 
-    document.getElementById("date").textContent =
-        today.toLocaleDateString(locale, { 
+    const dateString = today.toLocaleDateString(locale, { 
             month: "short",
             day: "numeric",
             year: "numeric"
         });
+    document.getElementById("date").textContent = capitalize(dateString);
+        
 }
-// const date = new Date();
-// document.getElementById("date").textContent =
-// date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 
 // Get Geolocation
 navigator.geolocation.getCurrentPosition(async pos => {
-    const { latitude, longitude } = pos.coords;
-    updateLocationInfo(latitude, longitude);
-    updateWeatherInfo(latitude, longitude);
+    currentLat = pos.coords.latitude;
+    currentLong = pos.coords.longitude;
+    
+    updateLocationInfo(currentLat, currentLong);
+    updateWeatherInfo(currentLat, currentLong);
 });
 
-const updateLocationInfo = async (latitude, longitude) => {
-    const googleURL = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyDP0wNN63Wz91zAldMps6RfoHs5zgnO-pE`;
+const updateLocationInfo = async (lat, long) => {
+    const googleURL = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=AIzaSyDP0wNN63Wz91zAldMps6RfoHs5zgnO-pE`;
 
     const res = await fetch(googleURL);
     const data = await res.json();
@@ -139,56 +167,66 @@ function convertKelvinToFahrenheit (tempKelvin) {
     return Math.round(1.8 * (tempKelvin - 273) + 32);
 }
 
-const updateWeatherInfo = async (latitude, longitude) => {
-    const weatherApiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${latitude}&lon=${longitude}&appid=35b058347c0103ccb9299fc20d824cae`;
+const updateWeatherInfo = async (lat, long) => {
+    const { units } = getCurrentConfig();
+
+    // Define uinits based on current setting
+    const isMetric = units === "metric";
+    const tempSymbol = isMetric ? "°C" : "°F";
+    const speedSymbol = isMetric ? "km/h" : "mph";
+
+    const weatherApiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&units=${units}&appid=35b058347c0103ccb9299fc20d824cae`;
+    console.log(weatherApiUrl);
 
     const res = await fetch(weatherApiUrl);
     const data = await res.json();
-    let currentTempKelvin = convertKelvinToFahrenheit(data.current.temp);
+    // let currentTempKelvin = convertKelvinToFahrenheit(data.current.temp);
+    let currentTemp = Math.round(data.current.temp);
     // console.log('temperature: ', currentTempKelvin);
     const currentUvIndex = Math.round(data.current.uvi);
     // console.log('UV Index:', currentUvIndex);
     const currentHumidityPercent = Math.round(data.current.humidity);
     // console.log('humidity:', currentHumidityPercent);
-    const currentWindSpeedMph = Math.round(data.current.wind_speed);
+    let rawWindSpeed = data.current.wind_speed;
+    if (isMetric) {
+        rawWindSpeed = rawWindSpeed * 3.6;
+    }
+    const currentWindSpeedMph = Math.round(rawWindSpeed);
     // console.log('wind speed:', currentWindSpeedMph);
 
 //Forecast Today
     const today = data.daily[0];
     // console.log(today);
-    const todayHighTempF = convertKelvinToFahrenheit(today.temp.max);
+    const todayHighTempF = Math.round(today.temp.max);
     // console.log(todayHighTempF);
-    const todayLowTempF = convertKelvinToFahrenheit(today.temp.min);
+    const todayLowTempF = Math.round(today.temp.min);
     // console.log(todayLowTempF);
-    const todayName = 'today';
+    const todayName = i18next.t('today').toUpperCase();
     // console.log(todayName);
-    // const todayIconCode = today.weather[0].icon;
-    // // console.log(todayIconCode);
-    // const todayIconUrl = `https://openweathermap.org/img/wn/${todayIconCode}@2x.png`;
-    // // console.log(todayIconUrl);
 
 //Forecast Next Day
     const nextDay = data.daily[1];
     // console.log(nextDay);
-    const nextDayHighTempF = convertKelvinToFahrenheit(nextDay.temp.max);
+    const nextDayHighTempF = Math.round(nextDay.temp.max);
     // console.log(nextDayHighTempF);
-    const nextDayLowTempF = convertKelvinToFahrenheit(nextDay.temp.min);
+    const nextDayLowTempF = Math.round(nextDay.temp.min);
     // console.log(nextDayLowTempF);
 
 // Determine Day of Week for Next Day
-    const nextDayName = new Date(nextDay.dt * 1000).toLocaleDateString('en-US', { weekday: 'short'});
+    const locale = getCurrentLocale();
+    const nextDayName = new Date(nextDay.dt * 1000).toLocaleDateString(locale, { weekday: 'short'}).toUpperCase();
     // console.log(nextDayName);
 
 // Forecast Day-After-Next
     const dayAfterNext = data.daily[2];
     // console.log(dayAfterNext);
-    const dayAfterNextHighTempF = convertKelvinToFahrenheit(dayAfterNext.temp.max);
+    const dayAfterNextHighTempF = Math.round(dayAfterNext.temp.max);
     // console.log(dayAfterNextHighTempF);
-    const dayAfterNextLowTempF = convertKelvinToFahrenheit(dayAfterNext.temp.min);
+    const dayAfterNextLowTempF = Math.round(dayAfterNext.temp.min);
     // console.log(dayAfterNextLowTempF);
 
 // Determine Day of Week for Day After Next Day
-    const dayAfterNextDayName = new Date(dayAfterNext.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' });
+    const dayAfterNextDayName = new Date(dayAfterNext.dt * 1000).toLocaleDateString(locale, { weekday: 'short' }).toUpperCase();
     // console.log(dayAfterNextDayName);
 
 const weatherConditionMap = {
@@ -295,23 +333,34 @@ const weatherConditionMap = {
 
 // Get Elements By ID & update content below
 //Current Condition Info
-    document.getElementById('current-temp-value').textContent = `${currentTempKelvin}°F`;
+    document.getElementById('current-temp-value').textContent = `${currentTemp}${tempSymbol}`;
     document.getElementById('uv-index-value').textContent = currentUvIndex;
     document.getElementById('humidity-value').textContent = `${currentHumidityPercent}%`;
-    document.getElementById('wind-speed-value').textContent = `${currentWindSpeedMph} mph`;
+    document.getElementById('wind-speed-value').textContent = `${currentWindSpeedMph} ${speedSymbol}`;
 
 //Forecast Info
     //Today
     document.getElementById('today').textContent = todayName.toUpperCase();
-    document.getElementById('today-high-temp').textContent = `${todayHighTempF}°F`;
-    document.getElementById('today-low-temp').textContent = `${todayLowTempF}°F`;
+    document.getElementById('today-high-temp').textContent = `${todayHighTempF}${tempSymbol}`;
+    document.getElementById('today-low-temp').textContent = `${todayLowTempF}${tempSymbol}`;
     // document.getElementById('today-weather-icon').src = todayIconUrl;
     //Next Day
     document.getElementById('next-day').textContent = nextDayName.toUpperCase();
-    document.getElementById('next-day-high-temp').textContent = `${nextDayHighTempF}°F`;
-    document.getElementById('next-day-low-temp').textContent = `${nextDayLowTempF}°F`;
+    document.getElementById('next-day-high-temp').textContent = `${nextDayHighTempF}${tempSymbol}`;
+    document.getElementById('next-day-low-temp').textContent = `${nextDayLowTempF}${tempSymbol}`;
     //Day After Next Day
     document.getElementById('day-after-next').textContent = dayAfterNextDayName.toUpperCase();
-    document.getElementById('day-after-next-high-temp').textContent = `${dayAfterNextHighTempF}°F`;
-    document.getElementById('day-after-next-low-temp').textContent = `${dayAfterNextLowTempF}°F`;
+    document.getElementById('day-after-next-high-temp').textContent = `${dayAfterNextHighTempF}${tempSymbol}`;
+    document.getElementById('day-after-next-low-temp').textContent = `${dayAfterNextLowTempF}${tempSymbol}`;
 } 
+
+function renderAll(lat, long) {
+    render();
+    renderDay();
+    renderDate();
+    updateWeatherInfo(lat, long);
+}
+
+render();
+renderDay();
+renderDate();
