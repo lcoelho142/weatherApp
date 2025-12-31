@@ -1,5 +1,7 @@
 let currentLat;
 let currentLong;
+let currentCondition = "Clear"; //Default
+let activeBlurbIndex = null; // Stores current Blurb
 
 const localeConfig = {
     en: {
@@ -26,7 +28,7 @@ resources: {
         translation: {
             english: "English",
             portuguese: "Portuguese",
-            currentTemp: "Current Temp",
+            conditionSum: "...",
             localConditions: "Local Conditions",
             uvi: "UV Index",
             humidity: "Humidity",
@@ -34,22 +36,58 @@ resources: {
             forecast: "3-Day Forecast",
             today: "Today",
             high: "High",
-            low: "Low"
-        } 
+            low: "Low",
+
+            weather: {
+                Clear: ["100% chance of my skin glistening!", "I'm melting. Someone get me a leaf!", "The sun is way too loud right now."],
+                Clouds: ["The sky is officially boring.", "Just pick a mood, clouds, seriously.", '50 shades of "meh."'],
+                Rain: ["Finally, proper hydration!", "Feeling quite moist at the moment.", "The clouds are sobbing!"],
+                Snow: ["My toes are literally popsicles.", "I can't feel my legs. Everything is fine.", "Who invited the freezer to the party?"],
+                Thunderstorm: ["The clouds are fighting. Again.", "Who keeps taking photos with the flash on?", "Okay, we get it, you're angry."],
+                Drizzle: ["The sky is crying again!", "Just enough rain to be annoying.", "Not even enough water for a bath."],
+                Mist: ["Mysterious? No, just very damp.", "Hello? Is anyone out there?", "I can't see!"],
+                Smoke: ["Smells like a campfire, minus the food.", "Who burned the flies? Oh, it's the air.", "My lungs totally love the smolder."],
+                Haze: ["It's like the sky forgot its glasses!", "The air is thick today. Cool.", "Is it sunny? Is it cloudy? Who Knows!"],
+                Dust: ["The air is crusty and dusty.", "I'm 50% frog, 50% dirt now.", "Nature needs a vacuum cleaner!"],
+                Fog: ["Walking into trees is my new hobby.", "The world has vanished. Good luck!", "I've lost my lily pad. Fantastic."],
+                Sand: ["Please, I just want one drop of water!", "The desert called, it wants its air back.", "Looking for an Oasis right now."],
+                Ash: ["This grey snow tastes like rocks.", "The mountain is throwing a tantrum!", "I am now a statue of a frog."],
+                Squall: ["Make up your mind, sky!", "A sudden storm? How original.", "And just like that, I am soaking wet."],
+                Tornado: ["Why am I flying? I don't have wings.", "The wind is being very aggressive!", "See you in the next pond over!"]
+            }
+        }
     },
     pt: { 
         translation: { 
             english: "Inglês",
             portuguese: "Português",
-            currentTemp: "Temperatura Atual",
+            conditionSum: "...",
             localConditions: "Condições Locais",
             uvi: "Índice UV",
             humidity: "Humidade",
             windSpeed: "Velocidade do Vento",
             forecast: "Previsão de 3 Dias",
             today: "Hoje",
-            high: "Alto",
-            low: "Baixo"
+            high: "Máxima",
+            low: "Mínima",
+            
+            weather: {
+                Clear: ["100% de probabilidade de a minha pele ficar brilhante!", "Estou a derreter. Alguém me traga uma folha!", "O sol está muito forte agora."],
+                Clouds: ["O céu está oficialmente aborrecido.", "Escolham um humor, nuvens, a sério.", '50 tons de “meh”.'],
+                Rain: ["Finalmente, hidratação adequada!", "Sinto-me bastante hidratado neste momento.", "As nuvens estão a chorar!"],
+                Snow: ["Os meus dedos dos pés estão literalmente congelados.", "Não sinto as minhas pernas. Está tudo bem.", "Quem convidou o congelador para a festa?"],
+                Thunderstorm: ["As nuvens estão a lutar. Outra vez.", "Quem é que continua a tirar fotos com o flash ligado?", "Está bem, já percebemos, estás zangado."],
+                Drizzle: ["O céu está a chorar outra vez!", "Chove o suficiente para ser irritante.", "Não há água suficiente nem para tomar banho"],
+                Mist: ["Misterioso? Não, apenas muito húmido.", "Olá? Está alguém aí?", "Não consigo ver!"],
+                Smoke: ["Cheira a fogueira, sem a comida.", "Quem queimou as moscas? Ah, é o ar.", "Os meus pulmões adoram o cheiro a fumo."],
+                Haze: ["É como se o céu tivesse esquecido os óculos!", "O ar está pesado hoje. Fresco.", "Está ensolarado? Está nublado? Quem sabe!"],
+                Dust: ["O ar está seco e empoeirado.", "Agora sou 50% sapo, 50% sujidade.", "A natureza precisa de um aspirador!"],
+                Fog: ["Esbarrar em árvores é o meu novo passatempo.", "O mundo desapareceu. Boa sorte!", "Perdi o meu nenúfar. Fantástico."],
+                Sand: ["Por favor, só quero uma gota de água!", "O deserto ligou, quer o seu ar de volta", "À procura de um oásis agora mesmo."],
+                Ash: ["Esta neve cinzenta tem gosto de pedras.", "A montanha está a fazer birra!", "Agora sou uma estátua de sapo."],
+                Squall: ["Decida-se, céu!", "Uma tempestade repentina? Que original.", "E assim, sem mais nem menos, estou completamente encharcado."],
+                Tornado: ["Porque estou a voar? Não tenho asas.", "O vento está muito forte!", "Vemo-nos no próximo lago!"]
+            }
         } 
     }
 }
@@ -59,7 +97,7 @@ resources: {
 const translationMap = {
     english: "english",
     portuguese: "portuguese",
-    currentTemp: "current-temp",
+    conditionSum: "condition-summary",
     localConditions: "local-conditions",
     uvi: "uv-index",
     humidity: "humidity",
@@ -67,7 +105,7 @@ const translationMap = {
     forecast: "3-day-forecast",
     today: "today",
     high: ["high-today", "high-next-day", "high-day-after-next"],
-    low: ["low-today", "low-next-day", "low-day-after-next"]
+    low: ["low-today", "low-next-day", "low-day-after-next"],
 }
 
 
@@ -91,6 +129,18 @@ function render() {
     });
 }
 
+function updateBlurb() {
+    const blurbElement = document.getElementById("weather-blurb");
+    // Fetch translated array from i18next
+    const blurbs = i18next.t(`weather.${currentCondition}`, { returnObjects: true });
+    // Pick a random index
+    if (Array.isArray(blurbs) && blurbElement) {
+        // Pick random blurb
+        blurbElement.textContent = blurbs[activeBlurbIndex];
+    }
+    // console.log(blurbs);
+}
+
 function capitalize(str) {
     if (!str) return "";
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -100,12 +150,16 @@ function getCurrentLocale() {
     return getCurrentConfig().ui;
 }
 
-function changeLanguage(lang, lat, long) {
-    i18next.changeLanguage(lang, () => {
+async function changeLanguage(lang, lat, long) {
+    await i18next.changeLanguage(lang, () => {
+        render();
         renderDay();
         renderDate();
+        updateBlurb()
         renderAll(lat, long);
     });
+    render();
+    updateBlurb();
 }
 
 // Language Toggle Button on Click
@@ -120,7 +174,7 @@ function renderDay() {
     const locale = getCurrentLocale();
     const today = new Date();
     const dayName = today.toLocaleDateString(locale, { weekday: "long" });
-    document.getElementById("day").textContent = dayName.toUpperCase();
+    document.getElementById("day").textContent = capitalize(dayName);
 }
 
 // Get Calendar Date
@@ -133,7 +187,7 @@ function renderDate() {
             day: "numeric",
             year: "numeric"
         });
-    document.getElementById("date").textContent = capitalize(dateString);
+    document.getElementById("date").textContent = dateString.toUpperCase();
         
 }
 
@@ -168,14 +222,14 @@ function convertKelvinToFahrenheit (tempKelvin) {
 }
 
 const updateWeatherInfo = async (lat, long) => {
-    const { units } = getCurrentConfig();
+    const { units, weather: langCode } = getCurrentConfig();
 
     // Define uinits based on current setting
     const isMetric = units === "metric";
     const tempSymbol = isMetric ? "°C" : "°F";
     const speedSymbol = isMetric ? "km/h" : "mph";
 
-    const weatherApiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&units=${units}&appid=35b058347c0103ccb9299fc20d824cae`;
+    const weatherApiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&units=${units}&lang=${langCode}&appid=35b058347c0103ccb9299fc20d824cae`;
     console.log(weatherApiUrl);
 
     const res = await fetch(weatherApiUrl);
@@ -203,6 +257,18 @@ const updateWeatherInfo = async (lat, long) => {
     // console.log(todayLowTempF);
     const todayName = i18next.t('today').toUpperCase();
     // console.log(todayName);
+    currentCondition = data.current.weather[0].main;
+    // console.log("Current weather is now:", currentCondition);
+    const blurbs = i18next.t(`weather.${currentCondition}`, { returnObjects: true });
+    if (Array.isArray(blurbs)) {
+        if (activeBlurbIndex === null) {
+            activeBlurbIndex = Math.floor(Math.random() * blurbs.length)
+        };
+    }
+    const currentConditionSummary = data.current.weather[0].description;
+    render();
+    updateBlurb();
+    
 
 //Forecast Next Day
     const nextDay = data.daily[1];
@@ -232,90 +298,74 @@ const updateWeatherInfo = async (lat, long) => {
 const weatherConditionMap = {
         Clear: {
             src: "./weather-imgs/sunny.svg",
-            icon: 'fa-sun',
-            blurb: ['The sun is up, but are you? (no shade, but maybe you should find some...)']
+            icon: 'fa-sun'
         },
         Clouds: {
             src: "./weather-imgs/cloudy.svg",
-            icon: 'fa-cloud',
-            blurb: ['It do be cloudy!']
+            icon: 'fa-cloud'
         },
         Rain: {
             src: "./weather-imgs/rain-shower.svg",
-            icon: 'fa-cloud-showers-heavy',
-            blurb: ['When it rains, it pours!']
+            icon: 'fa-cloud-showers-heavy'
         },
         Snow: {
             src: "./weather-imgs/snowy.svg",
-            icon: 'fa-snowflake',
-            blurb: ['The weather outside be frightful!']
+            icon: 'fa-snowflake'
         },
         Thunderstorm: {
             src: "./weather-imgs/thunderstorm.svg",
-            icon: 'fa-cloud-bolt',
-            blurb: ['Ben Franklin be experiementing with electricity outside, be warned!']
+            icon: 'fa-cloud-bolt'
         },
         Drizzle: {
             src: "./weather-imgs/drizzle.svg",
-            icon: 'fa-cloud-rain',
-            blurb: ['It a lil wet outside!']
+            icon: 'fa-cloud-rain'
         },
         Mist: {
             src: "./weather-imgs/smog.svg",
-            icon: 'fa-smog',
-            blurb: ['Water particles are suffocating the air at the moment.']
+            icon: 'fa-smog'
         },
         Smoke: {
             src: "./weather-imgs/smog.svg",
-            icon: 'fa-smog',
-            blurb: ['Beware of second-hand smoke!']
+            icon: 'fa-smog'
         },
         Haze: {
             src: "./weather-imgs/smog.svg",
-            icon: 'fa-smog',
-            blurb: ["Are ya feelin' lazy or is it just hazy out there, today?"]
+            icon: 'fa-smog'
         },
         Dust: {
             src: "./weather-imgs/smog.svg",
-            icon: 'fa-smog',
-            blurb: ['The air be crusty and dusty.']
+            icon: 'fa-smog'
         },
         Fog: {
             src: "./weather-imgs/smog.svg",
-            icon: 'fa-smog',
-            blurb: ['Prepare to venture into the fog!']
+            icon: 'fa-smog'
         },
         Sand: {
             src: "./weather-imgs/smog.svg",
-            icon: 'fa-smog',
-            blurb: ["Hope you understand, there's gonna be sand!"]
+            icon: 'fa-smog'
         },
         Ash: {
             src: "./weather-imgs/volcanic-ash.svg",
-            icon: 'fa-volcano',
-            blurb: ['What in the Pompeii is happening!?']
+            icon: 'fa-volcano'
         },
         Squall: {
             src: "./weather-imgs/squall.svg",
-            icon: 'fa-wind',
-            blurb: ['The weather and wind be intense!']
+            icon: 'fa-wind'
         },
         Tornado: {
             src: "./weather-imgs/tornado.svg",
-            icon: 'fa-tornado',
-            blurb: ['Dorothy & Toto, get ready for a Tornado!']
+            icon: 'fa-tornado'
         }
     }
 
     // console.log(weatherConditionMap);
 
     //Today Condition
-    const todayCondition = today.weather[0].main;
+    const todayCondition = data.current.weather[0].main;
     const todayConfig = weatherConditionMap[todayCondition];
     document.getElementById('today-weather-icon').className = 
         `fa-solid ${todayConfig.icon}`;
     document.getElementById('frog-img').src = todayConfig.src;
-    document.getElementById('blurb').textContent = todayConfig.blurb;
         // console.log(todayConfig.icon);
     
     //Next Day Condition
@@ -343,6 +393,7 @@ const weatherConditionMap = {
     document.getElementById('today').textContent = todayName.toUpperCase();
     document.getElementById('today-high-temp').textContent = `${todayHighTempF}${tempSymbol}`;
     document.getElementById('today-low-temp').textContent = `${todayLowTempF}${tempSymbol}`;
+    document.getElementById('condition-summary').textContent = currentConditionSummary;
     // document.getElementById('today-weather-icon').src = todayIconUrl;
     //Next Day
     document.getElementById('next-day').textContent = nextDayName.toUpperCase();
@@ -356,11 +407,9 @@ const weatherConditionMap = {
 
 function renderAll(lat, long) {
     render();
-    renderDay();
-    renderDate();
     updateWeatherInfo(lat, long);
 }
 
-render();
 renderDay();
 renderDate();
+renderAll(lat, long);

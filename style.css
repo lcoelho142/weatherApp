@@ -24,14 +24,13 @@ body {
 main {
     margin: auto;
     display: grid;
-    grid-template-columns: 1fr 10fr 1fr;
+    grid-template-columns: minmax(150px, 250px) 10fr minmax(150px, 250px);
     grid-template-areas:
         "lg lg lg"
-        "lo lo lo"
+        "lo .  dt"
         "tp tp tp"
         "mt mt mt"
-        ".  ly  ."
-        "dt dt dt"
+        "ly ly ly"
         "cd cd cd"
         "ft ft ft";
 }
@@ -43,6 +42,7 @@ main {
 }
 .location-section { 
     grid-area: lo; 
+    margin-top: 1rem;
     margin-bottom: 2rem;
 }
 .current-temp-section { 
@@ -59,6 +59,7 @@ main {
 }
 .date-section { 
     grid-area: dt; 
+    margin-top: 1rem;
     margin-bottom: 2rem;
 }
 .local-conditions-section { 
@@ -79,6 +80,10 @@ h3 {
 .conditions-header {
     color: var(--accent);
     text-transform: uppercase;
+}
+
+.current-temp {
+    font-size: 3rem;
 }
 
 .sr-only {
@@ -164,9 +169,9 @@ select {
         grid-template-columns: repeat(12, minmax(0, 1fr));
         grid-template-areas:
         "lg lg lg lg lg lg lg lg lg lg lg lg"
-        "lo lo lo lo lo lo lo lo lo lo lo lo"
+        "tp tp tp tp tp tp tp tp tp tp tp tp"
         ".  .  .  mt mt mt mt mt mt  .  .  ."
-        "dt dt dt mt mt mt mt mt mt tp tp tp"
+        "lo lo lo mt mt mt mt mt mt dt dt dt"
         ".  .  .  mt mt mt mt mt mt  .  .  ."
         ".  .  .  .  ly ly ly ly  .  .  .  ."
         "cd cd cd cd cd cd ft ft ft ft ft ft";
@@ -177,6 +182,9 @@ select {
     .forecast-section {
         margin-left: 1rem;
     }
+    .location-section {
+        margin-top: 0;
+    }
 }
 
 @media (min-width: 1024px) {
@@ -184,8 +192,8 @@ select {
         grid-template-columns: repeat(12, minmax(0, 1fr));
         grid-template-areas:
         "lg lg lg lg lg lg lg lg lg lg lg lg"
-        ".  .  .  .  lo lo lo lo .  .  .  ."
-        "dt dt dt dt mt mt mt mt tp tp tp tp"
+        ".  .  .  .  tp tp tp tp .  .  .  ."
+        "lo lo lo lo mt mt mt mt dt dt dt dt"
         "cd cd cd cd mt mt mt mt ft ft ft ft"
         ".  .  .  .  ly ly ly ly .  .  .  . ";
     }
