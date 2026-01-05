@@ -27,8 +27,8 @@ main {
     grid-template-columns: minmax(150px, 250px) 10fr minmax(150px, 250px);
     grid-template-areas:
         "lg lg lg"
-        "lo .  dt"
         "tp tp tp"
+        "lo .  dt"
         "mt mt mt"
         "ly ly ly"
         "cd cd cd"
@@ -83,7 +83,7 @@ h3 {
 }
 
 .current-temp {
-    font-size: 3rem;
+    font-size: 4rem;
 }
 
 .sr-only {

@@ -26,8 +26,8 @@ lng: "en",
 resources: {
     en: { 
         translation: {
-            english: "English",
-            portuguese: "Portuguese",
+            english: "english",
+            portuguese: "portuguese",
             conditionSum: "...",
             localConditions: "Local Conditions",
             uvi: "UV Index",
@@ -59,8 +59,8 @@ resources: {
     },
     pt: { 
         translation: { 
-            english: "Inglês",
-            portuguese: "Português",
+            english: "inglês",
+            portuguese: "português",
             conditionSum: "...",
             localConditions: "Condições Locais",
             uvi: "Índice UV",
@@ -412,4 +412,3 @@ function renderAll(lat, long) {
 
 renderDay();
 renderDate();
-renderAll(lat, long);
