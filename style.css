@@ -26,6 +26,7 @@ main {
     display: grid;
     grid-template-columns: minmax(150px, 250px) 10fr minmax(150px, 250px);
     grid-template-areas:
+        "lf lf lf"
         "lg lg lg"
         "lo lo lo"
         "tp tp tp"
@@ -35,20 +36,24 @@ main {
         "cd cd cd"
         "ft ft ft";
 }
-
-.language-section { 
-    grid-area: lg; 
+.location-form {
+    grid-area: lf;
     margin-top: 3rem;
     margin-bottom: 2rem;
+}
+.language-section { 
+    grid-area: lg; 
+    margin-top: 2rem;
+    margin-bottom: 1rem;
 }
 .location-section { 
     grid-area: lo; 
     margin-top: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 .current-temp-section { 
     grid-area: tp; 
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 .mascot-section { 
     grid-area: mt; 
@@ -56,7 +61,7 @@ main {
 }
 .silly-text-section { 
     grid-area: ly;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 .date-section { 
     grid-area: dt; 
@@ -76,6 +81,11 @@ h2 {
 
 h3 {
     text-transform: uppercase;
+}
+
+.location-form input,
+.location-form button {
+    padding: .5rem;
 }
 
 .conditions-header {
@@ -169,6 +179,7 @@ select {
     main {
         grid-template-columns: repeat(12, minmax(0, 1fr));
         grid-template-areas:
+        "lf lf lf lf lf lf lf lf lf lf lf lf"
         "lg lg lg lg lg lg lg lg lg lg lg lg"
         "tp tp tp tp tp tp tp tp tp tp tp tp"
         ".  .  .  mt mt mt mt mt mt  .  .  ."
@@ -192,6 +203,7 @@ select {
     main {
         grid-template-columns: repeat(12, minmax(0, 1fr));
         grid-template-areas:
+        "lf lf lf lf lf lf lf lf lf lf lf lf"
         "lg lg lg lg lg lg lg lg lg lg lg lg"
         ".  .  .  .  tp tp tp tp .  .  .  ."
         "lo lo lo lo mt mt mt mt dt dt dt dt"

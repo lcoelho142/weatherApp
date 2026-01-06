@@ -1,5 +1,6 @@
-let currentLat;
-let currentLong;
+document.getElementById('location-form').style.display = 'none';
+let currentLat = null;
+let currentLong = null;
 let currentCondition = "Clear"; //Default
 let activeBlurbIndex = null; // Stores current Blurb
 
@@ -192,12 +193,41 @@ function renderDate() {
 }
 
 // Get Geolocation
-navigator.geolocation.getCurrentPosition(async pos => {
+navigator.geolocation.getCurrentPosition( pos => {
+
     currentLat = pos.coords.latitude;
     currentLong = pos.coords.longitude;
-    
+
     updateLocationInfo(currentLat, currentLong);
     updateWeatherInfo(currentLat, currentLong);
+}, error => {
+    console.log(error);
+    console.log('something bad happened, oh naurrr');
+    document.getElementById('location-form').style.display = 'block';
+});
+
+// console.log(navigator.geolocation.getCurrentPosition);
+
+document.getElementById('location-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const city = document.getElementById('city-input').value;
+
+    const res = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${city}&key=AIzaSyDP0wNN63Wz91zAldMps6RfoHs5zgnO-pE`
+    );
+    const data = await res.json();
+    if (!data.results.length) return;
+    const { lat, lng } = data.results[0].geometry.location;
+
+    updateLocationInfo(lat, lng);
+    updateWeatherInfo(lat, lng);
+})
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('location-form').addEventListener('submit', e => {
+        e.preventDefault();
+        console.log('form submitted');
+    });
 });
 
 const updateLocationInfo = async (lat, long) => {
