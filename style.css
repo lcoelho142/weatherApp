@@ -42,7 +42,7 @@ main {
     inset: 0;
     display: none;
     justify-content: center;
-    background-color: rgba(0, 0,0, 0.6);
+    background-color: #DCF6F9C0;
     backdrop-filter: blur(10px);
 }
 .city-input {
@@ -56,13 +56,23 @@ main {
     padding: clamp(100px, 25vw, 1000px);
 }
 .city-input > label {
-    color: #F6F6F6;
+    color: #0072A7;
     text-align: center;
 }
 .city-input > input, 
 .city-input > button {
     border-radius: 5px;
     padding: 0.5rem;
+}
+.city-input > button:hover {
+    background-color: #0072A7;
+    color: var(--bg);
+    border: #DCF6F9 2px solid;
+}
+.city-input > button {
+    background-color: #DCF6F9;
+    color: #0072A7;
+    border: #0072A7 2px solid;
 }
 body.modal-open {
     overflow: hidden;
