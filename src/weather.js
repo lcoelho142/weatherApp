@@ -10,10 +10,10 @@ export const updateWeatherInfo = async (lat, lon) => {
     const speedSymbol = isMetric ? "km/h" : "mph";
 
     const weatherUrl = 
-    `https://https://weather-app-mauve-three-68.vercel.app/api/weather?lat=${lat}&lon=${lon}&units=${units}&lang=${langCode}`;
+    `/api/weather?lat=${lat}&lon=${lon}&units=${units}&lang=${langCode}`;
     
     const geoUrl = 
-        `https://https://weather-app-mauve-three-68.vercel.app/api/geocode?lat=${lat}&lon=${lon}`;
+        `/api/geocode?lat=${lat}&lon=${lon}`;
 
     
 

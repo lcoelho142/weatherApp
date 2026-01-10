@@ -118,7 +118,6 @@ function renderCurrentCalendarDate() {
     document.getElementById("date").textContent = dateString.toUpperCase();    
 }
 
-
 // --- Event Listeners ---
 
 // 1. Unified Form Submit Handler
@@ -129,7 +128,7 @@ locationForm.addEventListener('submit', async e => {
 
     try {
         const res = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?address=${city}&key=AIzaSyDP0wNN63Wz91zAldMps6RfoHs5zgnO-pE`
+            `https://maps.googleapis.com/maps/api/geocode/json?address=${city}&key=${process.env.GOOGLE_MAPS_API_KEY}`
         );
         const data = await res.json();
 
