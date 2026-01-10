@@ -15,12 +15,17 @@ export const updateWeatherInfo = async (lat, lon) => {
     const geoUrl = 
         `/api/geocode?lat=${lat}&lon=${lon}`;
 
-    
-
     try {
 
         const googleRes = await fetch(geoUrl);
         const googleData = await googleRes.json();
+
+        if (googleData.status !== "OK") {
+            console.error("Google API Error:", googleData.status, googleData.error_message);
+            alert(`Location Error: ${googleData.status}. Check console for details.`);
+            return; // Stops the function before it crashes
+        }
+
         const comps = googleData.results[0].address_components;
         let city = "";
         let state = "";
