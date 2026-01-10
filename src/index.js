@@ -127,9 +127,7 @@ locationForm.addEventListener('submit', async e => {
     if(!city) return;
 
     try {
-        const res = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?address=${city}&key=${process.env.GOOGLE_MAPS_API_KEY}`
-        );
+        const res = await fetch(`/api/geocode?address=${encodeURIComponent(city)}`);
         const data = await res.json();
 
         if (!data.results.length) {
