@@ -8,17 +8,17 @@ export const updateWeatherInfo = async (lat, lon) => {
     const tempSymbol = isMetric ? "°C" : "°F";
     const speedSymbol = isMetric ? "km/h" : "mph";
 
-    const weatherApiUrl = 
+    const weatherUrl = 
     `https://weather-app.vercel.app/api/weather?lat=${lat}&lon=${lon}&units=${units}&lang=${langCode}`;
     
-    const googleUrl = 
+    const geoUrl = 
         `https://weather-app.vercel.app/api/geocode?lat=${lat}&lon=${lon}`;
 
     
 
     try {
 
-        const googleRes = await fetch(googleUrl);
+        const googleRes = await fetch(geoUrl);
         const googleData = await googleRes.json();
         const comps = googleData.results[0].address_components;
         let city = "";
@@ -44,7 +44,7 @@ export const updateWeatherInfo = async (lat, lon) => {
         document.getElementById('city').textContent = city;
         document.getElementById('region').textContent = `${state}, ${country}`;
 
-        const res = await fetch(weatherApiUrl);
+        const res = await fetch(weatherUrl);
         const data = await res.json();
 
         // --- 1. CURRENT WEATHER (The "Right Now" Data) ---
