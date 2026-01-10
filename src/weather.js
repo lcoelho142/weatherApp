@@ -1,5 +1,6 @@
 import { getCurrentConfig, getCurrentLocale } from "./translation.js";
 import { setCurrentCondition, capitalize, renderTranslatedInfo, renderCurrentBlurb, currentCondition } from "./index.js";
+
 // ALL Functions (Define these before you call them)
 export const updateWeatherInfo = async (lat, lon) => {
     // 1. Get Config & Units
@@ -9,10 +10,10 @@ export const updateWeatherInfo = async (lat, lon) => {
     const speedSymbol = isMetric ? "km/h" : "mph";
 
     const weatherUrl = 
-    `https://weather-app.vercel.app/api/weather?lat=${lat}&lon=${lon}&units=${units}&lang=${langCode}`;
+    `https://https://weather-app-mauve-three-68.vercel.app/api/weather?lat=${lat}&lon=${lon}&units=${units}&lang=${langCode}`;
     
     const geoUrl = 
-        `https://weather-app.vercel.app/api/geocode?lat=${lat}&lon=${lon}`;
+        `https://https://weather-app-mauve-three-68.vercel.app/api/geocode?lat=${lat}&lon=${lon}`;
 
     
 
