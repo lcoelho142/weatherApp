@@ -9,10 +9,11 @@ export const updateWeatherInfo = async (lat, lon) => {
     const speedSymbol = isMetric ? "km/h" : "mph";
 
     const weatherApiUrl = 
-    `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&units=${units}&lang=${langCode}&appid=35b058347c0103ccb9299fc20d824cae`
+    `https://weather-app.vercel.app/api/weather?lat=${lat}&lon=${lon}&units=${units}&lang=${langCode}`;
+    
+    const googleUrl = 
+        `https://weather-app.vercel.app/api/geocode?lat=${lat}&lon=${lon}`;
 
-    const googleUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=AIzaSyDP0wNN63Wz91zAldMps6RfoHs5zgnO-pE`;
-    console.log(googleUrl);
     
 
     try {
